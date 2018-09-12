@@ -120,12 +120,14 @@ class Nav extends React.Component {
      */
     handleSubmit = (e) => {
         e.preventDefault();
-        let {login} = this.props;
+        let {login, register} = this.props;
         let isLogin = this.state.mode === Nav.MODE.LOGIN;
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 if(isLogin)
                     login(values);
+                else
+                    register(values);
             }
         });
     };

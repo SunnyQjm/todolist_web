@@ -76,12 +76,13 @@ const TodolistAPI = {
  * 给TodolistAPI添加一些有用的函数
  *********************************/
 
-TodolistAPI.dealSuccess = function (res, successCb, failCb) {
+TodolistAPI.dealSuccess = function (res, successCb, failCb, needTipError=true) {
     let code = parseInt(res.data.code);
     //状态玛以2开头的请求都是成功的
     let success = code >= 200 && code <= 299;
     if (!success) {       //请求失败则弹窗提示
-        message.error('请求失败！');
+        if(needTipError)
+            message.error('请求失败！');
         console.log(res.data.msg);
         !!failCb && failCb(res.data.msg);
         return;

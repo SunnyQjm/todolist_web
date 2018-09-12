@@ -50,6 +50,27 @@ export default connect(
             },
             logout: () => {
                 UserManager.logout();
+            },
+            register: (format) => {
+                console.log(format);
+                if(format.password !== format.passwordAgain){
+                    message.error('两次密码输入不一致！');
+                    return;
+                }
+                dispatch({
+                    type: ACTION_HEADER_BEGIN_REGISTER,
+                });
+                UserManager.register(format.username, format.password)
+                    .then(res => {
+                        dispatch({
+                            type: ACTION_HEADER_REGISTER_FINISHED
+                        });
+                    })
+                    .catch(err => {
+                        dispatch({
+                            type: ACTION_HEADER_REGISTER_FINISHED
+                        });
+                    });
             }
         }
     },

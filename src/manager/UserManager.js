@@ -4,6 +4,7 @@ import {
 } from '../config/API'
 import {ACTION_COMMON_CHANGE_LOGIN_STATE} from "../ActionType";
 import store from '../store';
+import message from 'antd/lib/message';
 const UserManager = {
     userInfo: {},
     token: '',
@@ -31,6 +32,11 @@ function saveToken(token){
     })
 }
 
+function saveUserInfo(user) {
+    UserManager.userInfo = user;
+    //持久化到本地
+    localStorage.setItem(LocalStorageKey.USER_INFO, JSON.stringify(user));
+}
 
 /**
  * 更新令牌（令牌必须有效才能取得新令牌，否则会更新失败）
@@ -76,10 +82,7 @@ UserManager.login = function(username, password) {
             axios.post(TodolistAPI.LOGIN.api, requestData)
                 .then(res => {
                     TodolistAPI.dealSuccess(res, (data) => {          //这个回调被调用，则说明登陆成功
-                        UserManager.userInfo = data.user;
-                        console.log(UserManager);
-                        //持久化到本地
-                        localStorage.setItem(LocalStorageKey.USER_INFO, JSON.stringify(data.user));
+                        saveUserInfo(data.user);
                         saveToken(data.token);
 
                         store.dispatch({
@@ -95,6 +98,43 @@ UserManager.login = function(username, password) {
                 })
         })
     })
+};
+
+/**
+ * 用户注册
+ * @param username
+ * @param password
+ * @param email
+ * @returns {Promise<any>}
+ */
+UserManager.register = function(username, password, email = "") {
+    return new Promise((resolve, reject) => {
+       getTodoListAxios(axios => {
+           let requestData = {};
+           requestData[TodolistAPI.REGISTER.PARAM_USERNAME] = username;
+           requestData[TodolistAPI.REGISTER.PARAM_PASSWORD] = password;
+           requestData[TodolistAPI.REGISTER.PARAM_EMAIL] = email;
+           axios.post(TodolistAPI.REGISTER.api, requestData)
+               .then(res => {
+                   TodolistAPI.dealSuccess(res, (data) => {     //这个回调被调用说明注册成功
+                       saveUserInfo(data.user);
+                       saveToken(data.token);
+
+                       store.dispatch({
+                           type: ACTION_COMMON_CHANGE_LOGIN_STATE,
+                           data: true,
+                       })
+                   }, err => {
+                       message.info('用户已存在，请重新输入用户名');
+                   }, false);
+                   resolve(res);
+               })
+               .catch(err => {
+                   TodolistAPI.dealFail(err);
+                   reject(err);
+               })
+       })
+    });
 };
 
 /**
