@@ -1,11 +1,15 @@
 import React from 'react';
 import {Layout} from 'antd';
 import styled from 'styled-components';
+import {
+    BaseColor
+} from '../../components/base/base-component'
 
 const {Footer} = Layout;
 
 const MyFoot = styled(Footer)`
     flex-grow: 0;
+    background-color: ${BaseColor.lightGray}
 `;
 
 class FooterComponent extends React.Component{
