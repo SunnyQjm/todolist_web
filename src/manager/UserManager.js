@@ -144,6 +144,12 @@ UserManager.logout = function () {
     UserManager.token = '';
     UserManager.userInfo = {};
     localStorage.clear();
+    getTodoListAxios(axios => {
+        axios.defaults.headers.get['token'] = "";
+        axios.defaults.headers.post['token'] = "";
+        axios.defaults.headers.put['token'] = "";
+        axios.defaults.headers.delete['token'] = "";
+    });
     store.dispatch({
         type: ACTION_COMMON_CHANGE_LOGIN_STATE,
         data: false,

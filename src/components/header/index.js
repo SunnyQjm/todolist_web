@@ -34,6 +34,7 @@ const Header = styled.div`
     display: flex;
     height: 72px;
     align-items: center;
+    justify-content: center;
     background-color: ${BaseColor.lightGray};
 `;
 
@@ -44,6 +45,12 @@ const WebTitle = styled.div`
     text-align: center;
     padding: 0;
     flex-grow: 0;
+`;
+
+const HeaderContent = styled.div`
+    width: 1000px;
+    display: flex;
+    align-items: center;
 `;
 
 /**
@@ -139,100 +146,108 @@ class Nav extends React.Component {
         let searchComponent = <SearchComponent placeholder={'搜索资源'} onSearch={(value) => {
             this.props.history.push(`/search/${value}`)
         }}/>;
+
+        let headerContentWidth = isMobile ? '100%' : '1000px';
         return (
             <Header>
-                <Logo>
-                    <img src={require('../../img/icon.png')} style={{
-                        width: '30px',
-                        height: '30px',
-                    }}/>
-                </Logo>
-                {
-                    isMobile ?
-                        ''
-                        :
-                        <WebTitle>Todo List</WebTitle>
-                }
-                <FlexDiv/>
+                <HeaderContent style={{
+                    width: headerContentWidth,
+                }}
+                >
+                    <Logo>
+                        <img src={require('../../img/icon.png')} style={{
+                            width: '30px',
+                            height: '30px',
+                        }}/>
+                    </Logo>
+                    {
+                        isMobile ?
+                            ''
+                            :
+                            <WebTitle>Todo List</WebTitle>
+                    }
+                    <FlexDiv/>
 
-                {searchComponent}
+                    {searchComponent}
 
 
-                {
-                    isLogin ?           //如果没有登陆就显示登陆和注册入口
-                        <a type="primary" onClick={this.doLogout}>登出</a>
-                        :
-                        <div>
-                            <a type="primary" onClick={this.showLoginModal}>登陆</a>
-                            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-                            <a type="primary" onClick={this.showRegister}>注册</a>
+                    {
+                        isLogin ?           //如果没有登陆就显示登陆和注册入口
+                            <a type="primary" onClick={this.doLogout}>登出</a>
+                            :
+                            <div>
+                                <a type="primary" onClick={this.showLoginModal}>登陆</a>
+                                <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                                <a type="primary" onClick={this.showRegister}>注册</a>
 
-                            <Modal
-                                title={mode === Nav.MODE.LOGIN ? "登陆" : "注册"}
-                                centered
-                                visible={this.state.modalVisible && !isLogin}
-                                footer={null}
-                                onCancel={this.hideModal}
-                            >
-                                <Form onSubmit={this.handleSubmit} className="login-form">
-                                    <FormItem>
-                                        {getFieldDecorator('username', {
-                                            rules: [{required: true, message: '请输入用户名！'}],
-                                        })(
-                                            <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}
-                                                   placeholder="用户名"/>
-                                        )}
-                                    </FormItem>
-                                    <FormItem>
-                                        {getFieldDecorator('password', {
-                                            rules: [{required: true, message: '请输入密码！'}],
-                                        })(
-                                            <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>} type="password"
-                                                   placeholder="密码"/>
-                                        )}
-                                    </FormItem>
-                                    {
-                                        mode === Nav.MODE.REGISTER ?
-                                            <FormItem>
-                                                {getFieldDecorator('passwordAgain', {
-                                                    rules: [{required: true, message: '请再次请输入密码！'}],
-                                                })(
-                                                    <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>}
-                                                           type="password"
-                                                           placeholder="再次输入密码"/>
-                                                )}
-                                            </FormItem>
-                                            :
-                                            ""
-                                    }
-                                    <FormItem>
+                                <Modal
+                                    title={mode === Nav.MODE.LOGIN ? "登陆" : "注册"}
+                                    centered
+                                    visible={this.state.modalVisible && !isLogin}
+                                    footer={null}
+                                    onCancel={this.hideModal}
+                                >
+                                    <Form onSubmit={this.handleSubmit} className="login-form">
+                                        <FormItem>
+                                            {getFieldDecorator('username', {
+                                                rules: [{required: true, message: '请输入用户名！'}],
+                                            })(
+                                                <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}
+                                                       placeholder="用户名"/>
+                                            )}
+                                        </FormItem>
+                                        <FormItem>
+                                            {getFieldDecorator('password', {
+                                                rules: [{required: true, message: '请输入密码！'}],
+                                            })(
+                                                <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>} type="password"
+                                                       placeholder="密码"/>
+                                            )}
+                                        </FormItem>
                                         {
-                                            mode === Nav.MODE.LOGIN ?
-                                                getFieldDecorator('remember', {
-                                                    valuePropName: 'checked',
-                                                    initialValue: true,
-                                                })(
-                                                    <Checkbox>记住密码</Checkbox>
-                                                )
+                                            mode === Nav.MODE.REGISTER ?
+                                                <FormItem>
+                                                    {getFieldDecorator('passwordAgain', {
+                                                        rules: [{required: true, message: '请再次请输入密码！'}],
+                                                    })(
+                                                        <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>}
+                                                               type="password"
+                                                               placeholder="再次输入密码"/>
+                                                    )}
+                                                </FormItem>
                                                 :
                                                 ""
                                         }
-                                        <Button type="primary" htmlType="submit" className="login-form-button" style={{
-                                            width: '100%'
-                                        }}>
-                                            {mode === Nav.MODE.LOGIN ? "登陆" : "注册"}
-                                        </Button>
-                                        {
-                                            mode === Nav.MODE.LOGIN ?
-                                                <span>Or <a onClick={this.showRegister}>注册</a></span>
-                                                :
-                                                <span>Or <a onClick={this.showLoginModal}>登陆</a></span>
-                                        }
-                                    </FormItem>
-                                </Form>
-                            </Modal>
-                        </div>
-                }
+                                        <FormItem>
+                                            {
+                                                mode === Nav.MODE.LOGIN ?
+                                                    getFieldDecorator('remember', {
+                                                        valuePropName: 'checked',
+                                                        initialValue: true,
+                                                    })(
+                                                        <Checkbox>记住密码</Checkbox>
+                                                    )
+                                                    :
+                                                    ""
+                                            }
+                                            <Button type="primary" htmlType="submit" className="login-form-button" style={{
+                                                width: '100%'
+                                            }}>
+                                                {mode === Nav.MODE.LOGIN ? "登陆" : "注册"}
+                                            </Button>
+                                            {
+                                                mode === Nav.MODE.LOGIN ?
+                                                    <span>Or <a onClick={this.showRegister}>注册</a></span>
+                                                    :
+                                                    <span>Or <a onClick={this.showLoginModal}>登陆</a></span>
+                                            }
+                                        </FormItem>
+                                    </Form>
+                                </Modal>
+                            </div>
+                    }
+                </HeaderContent>
+
             </Header>
         );
     }
