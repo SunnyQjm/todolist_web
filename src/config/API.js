@@ -4,6 +4,7 @@ import {
 
 import thunky from 'thunky';
 import axios from 'axios';
+import message from 'antd/lib/message';
 
 
 const TodolistAPI = {
@@ -59,8 +60,45 @@ const TodolistAPI = {
         PARAM_FINISHED: 'finished',
         PARAM_PRIORITY: 'priority',
         PARAM_EXPIRE_DATE: 'expire_date',
+    },
+
+    /**
+     * 更新令牌
+     */
+    UPDATE_TOKEN: {
+        api: 'updateToken/',
+        PARAM_TOKEN: 'token',
+    }
+};
+
+
+/*********************************
+ * 给TodolistAPI添加一些有用的函数
+ *********************************/
+
+TodolistAPI.dealSuccess = function (res, successCb, failCb) {
+    let code = parseInt(res.data.code);
+    //状态玛以2开头的请求都是成功的
+    let success = code >= 200 && code <= 299;
+    if (!success) {       //请求失败则弹窗提示
+        message.error('请求失败！');
+        console.log(res.data.msg);
+        !!failCb && failCb(res.data.msg);
+        return;
     }
 
+    // 如果存在额外的回调，则执行它，并将有效数据提取出来，放到回调当中
+    !!successCb && successCb(res.data.data);
+};
+
+
+TodolistAPI.dealFail = function (err, cb, needTipError=true) {
+    if(needTipError)
+        message.error(err.message);
+    console.log(err);
+
+    // 如果存在额外的回调，则执行它，并将有效数据提取出来，放到回调当中
+    cb && cb();
 };
 
 const getTodoListAxios = thunky(cb => {

@@ -108,9 +108,12 @@ class Nav extends React.Component {
      */
     handleSubmit = (e) => {
         e.preventDefault();
+        let {login} = this.props;
+        let isLogin = this.state.mode === Nav.MODE.LOGIN;
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+                if(isLogin)
+                    login(values);
             }
         });
     };
@@ -153,7 +156,7 @@ class Nav extends React.Component {
                             <Modal
                                 title={mode === Nav.MODE.LOGIN ? "登陆" : "注册"}
                                 centered
-                                visible={this.state.modalVisible}
+                                visible={this.state.modalVisible && !isLogin}
                                 footer={null}
                                 onCancel={this.hideModal}
                             >
