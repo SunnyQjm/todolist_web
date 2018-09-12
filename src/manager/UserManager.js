@@ -13,7 +13,13 @@ const LocalStorageKey = {
     USER_INFO: 'user_info',
 };
 
-
+/**
+ * 保存令牌，主要执行下面三个操作
+ * 1. 保存到UserManager
+ * 2. 持久化到本地
+ * 3. 在axios的全局默认请求头中添加token字段，并让其值更新到最新的值
+ * @param token
+ */
 function saveToken(token){
     UserManager.token = token;
     localStorage.setItem(LocalStorageKey.TOKEN, token);
@@ -88,6 +94,19 @@ UserManager.login = function(username, password) {
                     reject(err);
                 })
         })
+    })
+};
+
+/**
+ * 退出登陆
+ */
+UserManager.logout = function () {
+    UserManager.token = '';
+    UserManager.userInfo = {};
+    localStorage.clear();
+    store.dispatch({
+        type: ACTION_COMMON_CHANGE_LOGIN_STATE,
+        data: false,
     })
 };
 

@@ -47,6 +47,9 @@ export default connect(
                             type: ACTION_HEADER_LOGIN_FINISHED
                         });
                     });
+            },
+            logout: () => {
+                UserManager.logout();
             }
         }
     },

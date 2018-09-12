@@ -71,6 +71,7 @@ class Nav extends React.Component {
         this.showRegister = this.showRegister.bind(this);
         this.showLoginModal = this.showLoginModal.bind(this);
         this.hideModal = this.hideModal.bind(this);
+        this.doLogout = this.doLogout.bind(this);
     }
 
     /**
@@ -100,6 +101,17 @@ class Nav extends React.Component {
         this.setState({
             modalVisible: false
         })
+    }
+
+    /**
+     * 退出登陆
+     */
+    doLogout() {
+        this.setState({
+            modalVisible: false,
+        });
+        const {logout} = this.props;
+        logout();
     }
 
     /**
@@ -146,7 +158,7 @@ class Nav extends React.Component {
 
                 {
                     isLogin ?           //如果没有登陆就显示登陆和注册入口
-                        ""
+                        <a type="primary" onClick={this.doLogout}>登出</a>
                         :
                         <div>
                             <a type="primary" onClick={this.showLoginModal}>登陆</a>
