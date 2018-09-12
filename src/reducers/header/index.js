@@ -1,16 +1,16 @@
 import {
-    ACTION_HEADER_CHANGE_SELECTED_KEY
+    ACTION_COMMON_CHANGE_LOGIN_STATE
 } from '../../ActionType';
 const initState = {
-    selectedKey: '',
+    isLogin: false,
 };
 
 const HeaderReducer = (state = initState, action) => {
     let newState = {};
     Object.assign(newState, state);
     switch (action.type){
-        case ACTION_HEADER_CHANGE_SELECTED_KEY:
-            newState.selectedKey = action.data;
+        case ACTION_COMMON_CHANGE_LOGIN_STATE:
+            newState.isLogin = action.data;
             break;
     }
     return newState;
