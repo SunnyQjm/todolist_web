@@ -1,10 +1,16 @@
 import React from 'react';
 import {Drawer, Form, Button, Col, Row, Input, Select, DatePicker} from 'antd';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 const {Option} = Select;
 
 class AddTaskDrawer extends React.Component {
+
+    judgeDateSelectable(m) {
+        //如果选择的日期比当前日期后则可以选择
+        return moment().valueOf() < m.valueOf();
+    }
 
     render() {
         const {getFieldDecorator} = this.props.form;
@@ -61,7 +67,13 @@ class AddTaskDrawer extends React.Component {
                                 {getFieldDecorator('expire_date', {
                                     rules: [{required: true, message: 'please enter url'}],
                                 })(
-                                    <DatePicker/>
+                                    <DatePicker
+                                        disabledDate={currentDate => {
+                                            console.log(currentDate);
+
+                                            return !!currentDate && moment().valueOf() > currentDate.valueOf();
+                                        }}
+                                    />
                                 )}
                             </Form.Item>
                         </Col>

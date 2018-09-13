@@ -150,10 +150,14 @@ class Nav extends React.Component {
      * @param values
      */
     handleAddTaskSubmit(values) {
+
+        // 关闭抽屉
+        this.toggleAddTaskModal(false);
         console.log(values);
         console.log(values.expire_date.valueOf());
         console.log(parseInt(values.priority));
-
+        let {addTask} = this.props;
+        addTask(values)
     }
 
 

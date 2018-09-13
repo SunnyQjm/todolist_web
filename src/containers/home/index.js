@@ -15,7 +15,9 @@ import {
     ACTION_HOME_GET_TASK_LIST_FINISH,
     ACTION_HOME_BEGIN_GET_TASK_LIST,
     ACTION_HOME_CHANGE_ORDER_BY,
-    ACTION_HOME_CHANGE_UP_OR_DOWN
+    ACTION_HOME_CHANGE_UP_OR_DOWN,
+    ACTION_HOME_ADD_TASK_FINISHED,
+    ACTION_HOME_BEGIN_ADD_TASK,
 } from '../../ActionType';
 
 
@@ -27,6 +29,13 @@ export default connect(
     },
     (dispatch) => {
         return {
+            /**
+             * 获取待办事项列表
+             * @param category
+             * @param orderBY
+             * @param page
+             * @param page_size
+             */
             getTaskList: function (category, orderBY, page = 1, page_size = 10) {
                 let url = `${TodolistAPI.GET_TASK_LIST.api}?${TodolistAPI.GET_TASK_LIST.PARAM_PAGE}=${page}`;
                 url += `&${TodolistAPI.GET_TASK_LIST.PARAM_PAGE_SIZE}=${page_size}`;
@@ -42,8 +51,6 @@ export default connect(
                     axios.get(url)
                         .then(res => {
                             TodolistAPI.dealSuccess(res, data => {
-                                console.log('a!!');
-                                console.log(data);
                                 dispatch({
                                     type: ACTION_HOME_GET_TASK_LIST_FINISH,
                                     data: data,
@@ -78,7 +85,9 @@ export default connect(
                     type: ACTION_HOME_CHANGE_UP_OR_DOWN,
                     data: upOrDown,
                 })
-            }
+            },
+
+
         }
     },
 )(HomeComponent)
