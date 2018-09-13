@@ -337,11 +337,7 @@ class HomeComponent extends React.Component {
             <TabPane tab={tabTitle} key={key}>
                 {
                     items.length > 0 ?
-                        <QueueAnim style={{
-                            width: '100%',
-                        }} interval={50} type={'top'}>
-                            {items}
-                        </QueueAnim>
+                        {items}
                         :
                         <div style={{
                             width: '100%',
