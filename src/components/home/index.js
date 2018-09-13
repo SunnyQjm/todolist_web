@@ -5,7 +5,7 @@ import {
 import Tabs from 'antd/lib/tabs';
 import styled from 'styled-components';
 import {
-    TaskCardComponent,
+    TaskCardComponent, AddTaskDrawer
 } from '../index'
 import Spin from 'antd/lib/spin';
 import Menu from 'antd/lib/menu';
@@ -17,6 +17,9 @@ import {
 } from '../../config/API'
 import 'rc-texty/assets/index.css';
 import Texty from 'rc-texty';
+import moment from 'moment';
+import Tag from "antd/lib/tag";
+import {BaseColor} from "../base/base-component";
 
 
 const TabPane = styled(Tabs.TabPane)`
@@ -48,6 +51,7 @@ const ToolBar = styled.div`
 
 let last_category = 1;
 let current_tab_key = 1;
+
 
 class HomeComponent extends React.Component {
     getEnter = (e) => {
@@ -121,14 +125,30 @@ class HomeComponent extends React.Component {
         }
     };
 
+    state = {
+        showAddTaskModal: false,
+        selectTask: null,
+    };
+
     constructor(props) {
         super(props);
         this.handleOrderByMenuClick = this.handleOrderByMenuClick.bind(this);
         this.handleUpOrDownMenuClick = this.handleUpOrDownMenuClick.bind(this);
         this.dealOnTabCLick = this.dealOnTabCLick.bind(this);
         this.dealRemoveTask = this.dealRemoveTask.bind(this);
+        this.makeTaskCard = this.makeTaskCard.bind(this);
+        this.handleModifyTaskSubmit = this.handleModifyTaskSubmit.bind(this);
     }
 
+    /**
+     * 切换添加待办事项抽屉的展示状态
+     * @param show
+     */
+    toggleAddTaskModal(show) {
+        this.setState({
+            showAddTaskModal: show,
+        })
+    }
 
     /**
      * 切换排序方式
@@ -226,8 +246,50 @@ class HomeComponent extends React.Component {
         });
     }
 
+    /**
+     * 处理更新待办事项
+     * @param values
+     */
+    handleModifyTaskSubmit(values, task) {
+        this.toggleAddTaskModal(false);
+        let {updateTask} = this.props;
+        !!values && !!task && task.id && (values.id = task.id);
+        updateTask(values, () => {      //更新成功
+            this.dealOnTabCLick(current_tab_key);
+        }, () => {                      //更新失败
+
+        });
+    }
+
+
+    /**
+     * 构造事项卡
+     * @param task
+     * @returns {*}
+     */
+    makeTaskCard(task) {
+        return <TaskCardComponent task={task} key={task.id} onRemove={this.dealRemoveTask} onEditClick={task => {   //编辑更新
+            this.setState({
+                selectTask: task,
+            });
+            this.toggleAddTaskModal(true);
+        }} onDoFinishClick={task => {           //标记完成
+            let tgs = [];
+            task.tags && task.tags.split(',').forEach(tag => {
+                tag = tag.replace(/\s+/g, "");
+                if (!!tag)
+                    tgs.push(<Tag color={BaseColor.tag_color_4} key={tag}>{tag}</Tag>)
+            });
+            this.handleModifyTaskSubmit({...task, finished: true, tags: tgs}, task)
+        }}/>
+    }
+
     render() {
-        let {isMobile, notFinishedTasks, finishedTasks, expireTasks, orderBY, up, isLogin, firstLoad} = this.props;
+        let {
+            isMobile, notFinishedTasks, finishedTasks, expireTasks, orderBY,
+            up, isLogin, firstLoad
+        } = this.props;
+        let {showAddTaskModal, selectTask} = this.state;
         let headerContentWidth = isMobile ? '100%' : '1000px';
         if (isLogin && firstLoad)
             this.loadNotFinishedTasks();
@@ -249,19 +311,24 @@ class HomeComponent extends React.Component {
         let expiredTaskItems = [];
 
         notFinishedTasks.forEach(task => {
-            notFinishedTaskItems.push(<TaskCardComponent task={task} key={task.id} onRemove={this.dealRemoveTask}/>)
+            notFinishedTaskItems.push(this.makeTaskCard(task))
         });
         finishedTasks.forEach(task => {
-            finishedTaskItems.push(<TaskCardComponent task={task} key={task.id} onRemove={this.dealRemoveTask}/>)
+            finishedTaskItems.push(this.makeTaskCard(task))
         });
         expireTasks.forEach(task => {
-            expiredTaskItems.push(<TaskCardComponent task={task} key={task.id} onRemove={this.dealRemoveTask}/>)
+            expiredTaskItems.push(this.makeTaskCard(task))
         });
-
         return (
             <div style={{
                 width: '100%',
             }}>
+                <AddTaskDrawer title="更新待办事项" show={showAddTaskModal} isMobile={isMobile} onClose={() => {
+                    this.toggleAddTaskModal(false)
+                }} onSubmit={this.handleModifyTaskSubmit} wrappedComponentRef={form => {
+                    this.form = form;
+                }} task={selectTask}/>
+
                 {
                     isLogin ?
                         <HomeBody style={{

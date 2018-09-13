@@ -7,16 +7,19 @@ const {Option} = Select;
 
 class AddTaskDrawer extends React.Component {
 
+
+
     render() {
         const {getFieldDecorator} = this.props.form;
-        const {show, isMobile, onClose, onSubmit} = this.props;
+        const {show, isMobile, onClose, onSubmit, task, title} = this.props;
         return (
             <Drawer
-                title="添加待办事项"
+                title={!!title ? title : "添加待办事项"}
                 width={isMobile ? '90%' : '30%'}
                 placement="right"
                 onClose={onClose}
-                maskClosable={false}
+                maskClosable={true}     // 点击蒙层允许关闭
+                destroyOnClose={true}
                 visible={show}
                 style={{
                     height: 'calc(100% - 55px)',
@@ -114,9 +117,18 @@ class AddTaskDrawer extends React.Component {
                         取消
                     </Button>
                     <Button onClick={() => {
+
                         this.props.form.validateFields((err, values) => {
                             if (!err) {
-                                onSubmit(values);
+                                onSubmit(values, task);
+
+                                // 提交之后清空表单
+                                this.props.form.setFieldsValue({
+                                    content: '',
+                                    priority: '',
+                                    expire_date: null,
+                                    tags: [],
+                                });
                             }
                         });
                     }} type="primary">提交</Button>
@@ -126,7 +138,33 @@ class AddTaskDrawer extends React.Component {
     }
 }
 
-const WrapperComponent = Form.create()(AddTaskDrawer);
+const WrapperComponent = Form.create({
+    mapPropsToFields(props) {
+        if (!!props.task) {
+            let tags = [];
+            !!props.task.tags && props.task.tags.split(',').forEach(tag => {
+                tag = tag.replace(/\s+/g, "");
+                !!tag && tags.push(tag);
+            });
+            return {
+                content: Form.createFormField({
+                    value: props.task.content,
+                }),
+                priority: Form.createFormField({
+                    value: props.task.priority,
+                }),
+                expire_date: Form.createFormField({
+                    value: moment(props.task.expire_date),
+                }),
+                tags: Form.createFormField({
+                    value: tags
+                })
+            };
+        }
+        else
+            return {};
+    },
+})(AddTaskDrawer);
 
 WrapperComponent.propTypes = {
     show: PropTypes.bool,

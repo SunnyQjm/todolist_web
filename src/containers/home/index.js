@@ -17,8 +17,11 @@ import {
     ACTION_HOME_CHANGE_ORDER_BY,
     ACTION_HOME_CHANGE_UP_OR_DOWN,
     ACTION_HOME_BEGIN_REMOVE_TASK,
-    ACTION_HOME_REMOVE_TASK_SUCCES,
+    ACTION_HOME_REMOVE_TASK_SUCCESS,
     ACTION_HOME_REMOVE_TASK_FAIL,
+    ACTION_HOME_UPDATE_TASK_FAIL,
+    ACTION_HOME_UPDATE_TASK_SUCCESS,
+    ACTION_HOME_BEGIN_UPDATE_TASK,
 } from '../../ActionType';
 
 
@@ -101,7 +104,7 @@ export default connect(
                             TodolistAPI.dealSuccess(res, data => {
                                 success(task);
                                 dispatch({
-                                    type: ACTION_HOME_REMOVE_TASK_SUCCES,
+                                    type: ACTION_HOME_REMOVE_TASK_SUCCESS,
                                     data: data,
                                     extra: task
                                 });
@@ -117,6 +120,51 @@ export default connect(
                                 type: ACTION_HOME_REMOVE_TASK_FAIL
                             });
                             fail();
+                        })
+                })
+            },
+
+            /**
+             * 更新待办事项
+             */
+            updateTask(values, success = () => {}, fail = () => {}) {
+                let formatData = {...values};
+                formatData[TodolistAPI.ADD_TASK.PARAM_EXPIRE_DATE]
+                    = values[TodolistAPI.ADD_TASK.PARAM_EXPIRE_DATE].valueOf();
+                formatData[TodolistAPI.ADD_TASK.PARAM_PRIORITY]
+                    = parseInt(values[TodolistAPI.ADD_TASK.PARAM_PRIORITY]);
+                let tags = "";
+                if(!!values[TodolistAPI.ADD_TASK.PARAM_TAGS])
+                    values[TodolistAPI.ADD_TASK.PARAM_TAGS].forEach(tag => {
+                        tags += `${tag}, `;
+                    });
+                formatData[TodolistAPI.ADD_TASK.PARAM_TAGS]
+                    = tags;
+                dispatch({
+                    type: ACTION_HOME_BEGIN_UPDATE_TASK
+                });
+                getTodoListAxios(axios => {
+                    axios.put(`${TodolistAPI.TASK_DETAIL.api}/${values.id}`, formatData)
+                        .then(res => {
+                            TodolistAPI.dealSuccess(res, data => {
+                                dispatch({
+                                    type: ACTION_HOME_UPDATE_TASK_SUCCESS,
+                                    data: data,
+                                    extra: formatData,
+                                });
+                                success();
+                            }, err => {
+                                dispatch({
+                                    type: ACTION_HOME_UPDATE_TASK_FAIL
+                                });
+                                fail()
+                            })
+                        })
+                        .catch(err => {
+                            dispatch({
+                                type: ACTION_HOME_UPDATE_TASK_FAIL
+                            });
+                            fail()
                         })
                 })
             }

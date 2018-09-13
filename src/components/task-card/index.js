@@ -7,6 +7,7 @@ import {
 import moment from 'moment'
 import Icon from 'antd/lib/icon';
 import Tag from 'antd/lib/tag';
+import ToolTip from 'antd/lib/tooltip';
 
 const radius = '8px';
 
@@ -91,13 +92,13 @@ class TaskCardComponent extends React.Component {
     }
 
 
-    static judgeExpired(expire_date){
+    static judgeExpired(expire_date) {
         return moment().valueOf() > parseInt(expire_date)
     }
 
     render() {
         let {content, expire_date, finished, priority, tags} = this.props.task;
-        let {onRemove} = this.props;
+        let {onRemove, onEditClick, onDoFinishClick} = this.props;
         let {hover} = this.state;
         let tgs = [];
         if (!!tags) {
@@ -135,6 +136,35 @@ class TaskCardComponent extends React.Component {
                         {tgs}
                     </ItemTags>
                 </TaskCardContent>
+                {
+                    hover && !finished && !expired ?
+                        <div style={{
+                            fontSize: '1.6em',
+                            color: BaseColor.gray,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}>
+                            <ToolTip title={'点击标记此事项完成'}>
+                                <Icon type={'check'} style={{
+                                    marginRight: '20px',
+                                    cursor: 'pointer'
+                                }} onClick={() => {
+                                    onDoFinishClick(this.props.task)
+                                }}/>
+                            </ToolTip>
+                            <ToolTip title={'点击编辑此事项'}>
+                                <Icon type={'edit'} style={{
+                                    marginRight: '20px',
+                                    cursor: 'pointer'
+                                }} onClick={() => {
+                                    onEditClick(this.props.task);
+                                }}/>
+                            </ToolTip>
+                        </div>
+                        :
+                        ""
+                }
 
                 {
                     hover ?
@@ -161,6 +191,8 @@ TaskCardComponent.propTypes = {
         }
     ),
     onRemove: PropTypes.func,
+    onEditClick: PropTypes.func,
+    onDoFinishClick: PropTypes.func,
 };
 
 TaskCardComponent.defaultProps = {
@@ -174,7 +206,11 @@ TaskCardComponent.defaultProps = {
     }),
     onRemove: (task) => {
     },
+    onEditClick: (task) => {
+    },
+    onDoFinishClick: (task) => {
 
+    }
 };
 
 export default TaskCardComponent;
