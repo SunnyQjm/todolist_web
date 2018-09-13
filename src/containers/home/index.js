@@ -62,19 +62,19 @@ export default connect(
                                     category: category,
                                 });
                             }, err => {
-                                dispatch({
-                                    type: ACTION_HOME_GET_TASK_LIST_FINISH,
-                                    data: [],
-                                    category: category,
-                                });
+                                // dispatch({
+                                //     type: ACTION_HOME_GET_TASK_LIST_FINISH,
+                                //     data: [],
+                                //     category: category,
+                                // });
                             })
                         })
                         .catch(err => {
-                            dispatch({
-                                type: ACTION_HOME_GET_TASK_LIST_FINISH,
-                                data: [],
-                                category: category,
-                            });
+                            // dispatch({
+                            //     type: ACTION_HOME_GET_TASK_LIST_FINISH,
+                            //     data: [],
+                            //     category: category,
+                            // });
                             TodolistAPI.dealFail(err);
                         })
                 })

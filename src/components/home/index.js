@@ -285,7 +285,7 @@ class HomeComponent extends React.Component {
             task.tags && task.tags.split(',').forEach(tag => {
                 tag = tag.replace(/\s+/g, "");
                 if (!!tag)
-                    tgs.push(<Tag color={BaseColor.tag_color_4} key={tag}>{tag}</Tag>)
+                    tgs.push(tag)
             });
             this.handleModifyTaskSubmit({...task, finished: true, tags: tgs}, task)
         }}/>
@@ -390,6 +390,7 @@ class HomeComponent extends React.Component {
             notFinishedTaskItems.push(this.makeTaskCard(task))
         });
         finishedTasks.forEach(task => {
+            console.log(task);
             finishedTaskItems.push(this.makeTaskCard(task))
         });
         expireTasks.forEach(task => {
