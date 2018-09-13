@@ -337,7 +337,11 @@ class HomeComponent extends React.Component {
             <TabPane tab={tabTitle} key={key}>
                 {
                     items.length > 0 ?
-                        {items}
+                        <div style={{
+                            width: '100%',
+                        }}>
+                            {items}
+                        </div>
                         :
                         <div style={{
                             width: '100%',
