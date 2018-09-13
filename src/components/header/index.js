@@ -27,6 +27,7 @@ const Header = styled.div`
     flex-grow: 0;
     display: flex;
     height: 72px;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
     background-color: ${BaseColor.lightGray};

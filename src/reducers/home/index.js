@@ -64,6 +64,8 @@ const HomeReducer = (state = initState, action) => {
             break;
         case ACTION_COMMON_CHANGE_LOGIN_STATE:
             newState.isLogin = action.data;
+            //登陆状态改变的时候,刷新当前页面
+            newState.firstLoad = true;
             break;
         case ACTION_HOME_ADD_TASK_SUCCESS:          //成功添加一个待办事项
             // 将firstLoad置true，以达到刷新当前页面数据的效果

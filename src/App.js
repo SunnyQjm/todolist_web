@@ -29,7 +29,6 @@ const AppBody = styled(Layout)`
 `;
 
 const MyContent = styled(Content)`
-    height: 100%;
 `;
 
 let isMobile = false;

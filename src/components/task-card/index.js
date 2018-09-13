@@ -105,7 +105,9 @@ class TaskCardComponent extends React.Component {
             tags.split(',').forEach(tag => {
                 tag = tag.replace(/\s+/g, "");
                 if (!!tag)
-                    tgs.push(<Tag color={BaseColor.tag_color_4} key={tag}>{tag}</Tag>)
+                    tgs.push(<Tag color={BaseColor.tag_color_4} key={tag} style={{
+                        marginTop: '10px',
+                    }}>{tag}</Tag>)
             });
         }
 
@@ -133,6 +135,7 @@ class TaskCardComponent extends React.Component {
                                     color={BaseColor.tag_color_1}>截至时间: {moment(parseInt(expire_date)).format('YYYY-MM-DD')}</Tag>
 
                         }
+                        <br/>
                         {tgs}
                     </ItemTags>
                 </TaskCardContent>
