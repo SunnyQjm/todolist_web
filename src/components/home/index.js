@@ -47,6 +47,7 @@ const ToolBar = styled.div`
 
 
 let last_category = 1;
+let current_tab_key = 1;
 
 class HomeComponent extends React.Component {
     getEnter = (e) => {
@@ -125,6 +126,7 @@ class HomeComponent extends React.Component {
         this.handleOrderByMenuClick = this.handleOrderByMenuClick.bind(this);
         this.handleUpOrDownMenuClick = this.handleUpOrDownMenuClick.bind(this);
         this.dealOnTabCLick = this.dealOnTabCLick.bind(this);
+        this.dealRemoveTask = this.dealRemoveTask.bind(this);
     }
 
 
@@ -189,9 +191,15 @@ class HomeComponent extends React.Component {
         last_category = TodolistAPI.GET_TASK_LIST.Category.EXPIRE;
     }
 
-
+    /**
+     * 处理列表切换
+     * @param key
+     */
     dealOnTabCLick(key) {
         let judge = parseInt(key);
+
+        // 记录当前处于哪个Tab
+        current_tab_key = judge;
         switch (judge) {
             case 1:
                 this.loadNotFinishedTasks();
@@ -203,6 +211,19 @@ class HomeComponent extends React.Component {
                 this.loadExpiredTasks();
                 break;
         }
+    }
+
+    /**
+     * 处理删除任务
+     * @param task
+     */
+    dealRemoveTask(task) {
+        let {removeTask} = this.props;
+        removeTask(task, () => {        //删除成功
+            this.dealOnTabCLick(current_tab_key);
+        }, () => {                      //删除失败
+
+        });
     }
 
     render() {
@@ -228,13 +249,13 @@ class HomeComponent extends React.Component {
         let expiredTaskItems = [];
 
         notFinishedTasks.forEach(task => {
-            notFinishedTaskItems.push(<TaskCardComponent task={task} key={task.id}/>)
+            notFinishedTaskItems.push(<TaskCardComponent task={task} key={task.id} onRemove={this.dealRemoveTask}/>)
         });
         finishedTasks.forEach(task => {
-            finishedTaskItems.push(<TaskCardComponent task={task} key={task.id}/>)
+            finishedTaskItems.push(<TaskCardComponent task={task} key={task.id} onRemove={this.dealRemoveTask}/>)
         });
         expireTasks.forEach(task => {
-            expiredTaskItems.push(<TaskCardComponent task={task} key={task.id}/>)
+            expiredTaskItems.push(<TaskCardComponent task={task} key={task.id} onRemove={this.dealRemoveTask}/>)
         });
 
         return (

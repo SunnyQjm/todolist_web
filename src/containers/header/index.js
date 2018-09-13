@@ -13,7 +13,7 @@ import {
     ACTION_HEADER_BEGIN_LOGIN,
     ACTION_COMMON_CHANGE_LOGIN_STATE,
     ACTION_HOME_BEGIN_ADD_TASK,
-    ACTION_HOME_ADD_TASK_FINISHED
+    ACTION_HOME_ADD_TASK_SUCCESS
 } from '../../ActionType';
 
 import {
@@ -97,18 +97,12 @@ export default connect(
                             TodolistAPI.dealSuccess(res, data => {
                                 console.log(data);
                                 dispatch({
-                                    type: ACTION_HOME_ADD_TASK_FINISHED
+                                    type: ACTION_HOME_ADD_TASK_SUCCESS
                                 });
                             }, err => {
-                                dispatch({
-                                    type: ACTION_HOME_ADD_TASK_FINISHED
-                                });
                             })
                         })
                         .catch(err => {
-                            dispatch({
-                                type: ACTION_HOME_ADD_TASK_FINISHED
-                            });
                             TodolistAPI.dealFail(err);
                         })
                 })

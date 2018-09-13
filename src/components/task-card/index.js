@@ -173,7 +173,6 @@ TaskCardComponent.defaultProps = {
         finished: false,
     }),
     onRemove: (task) => {
-        console.log(task);
     },
 
 };

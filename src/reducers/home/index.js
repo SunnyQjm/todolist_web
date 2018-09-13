@@ -3,7 +3,8 @@ import {
     ACTION_HOME_BEGIN_GET_TASK_LIST,
     ACTION_HOME_CHANGE_UP_OR_DOWN,
     ACTION_HOME_CHANGE_ORDER_BY,
-    ACTION_COMMON_CHANGE_LOGIN_STATE
+    ACTION_COMMON_CHANGE_LOGIN_STATE,
+    ACTION_HOME_ADD_TASK_SUCCESS,
 } from '../../ActionType'
 import {
     TodolistAPI
@@ -54,6 +55,11 @@ const HomeReducer = (state = initState, action) => {
 
             }
             break;
+        case ACTION_HOME_ADD_TASK_SUCCESS:          //成功添加一个待办事项
+            // 将firstLoad置true，以达到刷新当前页面数据的效果
+            newState.firstLoad = true;
+            break;
+
     }
     return newState;
 };

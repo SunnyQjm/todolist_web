@@ -7,11 +7,6 @@ const {Option} = Select;
 
 class AddTaskDrawer extends React.Component {
 
-    judgeDateSelectable(m) {
-        //如果选择的日期比当前日期后则可以选择
-        return moment().valueOf() < m.valueOf();
-    }
-
     render() {
         const {getFieldDecorator} = this.props.form;
         const {show, isMobile, onClose, onSubmit} = this.props;
@@ -83,7 +78,7 @@ class AddTaskDrawer extends React.Component {
                         <Col>
                             <Form.Item label="请输入标签">
                                 {getFieldDecorator('tags', {
-                                    rules: [{required: false, message: 'Please select an owner'}],
+                                    rules: [{required: true, message: 'Please select an owner'}],
                                 })(
                                     <Select
                                         mode="tags"
