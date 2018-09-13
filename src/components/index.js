@@ -5,6 +5,7 @@ import LoadingComponent from './loading';
 import HomeComponent from './home';
 import TaskCardComponent from './task-card';
 import LoginRegisterModal from './login-register-modal';
+import AddTaskDrawer from './add-task-drawer';
 
 export {
     FooterComponent,
@@ -14,4 +15,5 @@ export {
     HomeComponent,
     TaskCardComponent,
     LoginRegisterModal,
+    AddTaskDrawer,
 }

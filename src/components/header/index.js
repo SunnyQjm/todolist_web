@@ -7,7 +7,8 @@ import {
 } from '../base/base-component';
 import {
     SearchComponent,
-    LoginRegisterModal
+    LoginRegisterModal,
+    AddTaskDrawer,
 } from '../index'
 
 
@@ -62,6 +63,7 @@ class Nav extends React.Component {
 
     state = {
         modalVisible: false,
+        showAddTaskModal: false,
     };
 
     constructor(props) {
@@ -70,9 +72,19 @@ class Nav extends React.Component {
         this.showLoginModal = this.showLoginModal.bind(this);
         this.hideModal = this.hideModal.bind(this);
         this.doLogout = this.doLogout.bind(this);
-        this.addTask = this.addTask.bind(this);
+        this.toggleAddTaskModal = this.toggleAddTaskModal.bind(this);
+        this.handleAddTaskSubmit = this.handleAddTaskSubmit.bind(this);
     }
 
+    /**
+     * 切换添加待办事项抽屉的展示状态
+     * @param show
+     */
+    toggleAddTaskModal(show){
+        this.setState({
+            showAddTaskModal: show,
+        })
+    }
     /**
      * 显示登陆模态框
      */
@@ -117,7 +129,7 @@ class Nav extends React.Component {
      * 处理表单提交
      * @param e
      */
-    handleSubmit = (e, form) => {
+    handleLoginOrRegisterSubmit = (e, form) => {
         e.preventDefault();
         let {login, register} = this.props;
         let isLogin = this.state.mode === Nav.MODE.LOGIN;
@@ -134,15 +146,20 @@ class Nav extends React.Component {
 
 
     /**
-     * 添加一个待办事项
+     * 处理添加一个待办事项的表单提交
+     * @param values
      */
-    addTask() {
-        console.log('add task');
+    handleAddTaskSubmit(values) {
+        console.log(values);
+        console.log(values.expire_date.valueOf());
+        console.log(parseInt(values.priority));
+
     }
+
 
     render() {
         const {isMobile, isLogin} = this.props;
-        const {mode} = this.state;
+        const {mode, showAddTaskModal} = this.state;
         let searchComponent = <SearchComponent placeholder={'搜索资源'} onSearch={(value) => {
             this.props.history.push(`/search/${value}`)
         }}/>;
@@ -175,7 +192,13 @@ class Nav extends React.Component {
                         height: '30px',
                         marginRight: '20px',
                         cursor: 'pointer',
-                    }} onClick={this.addTask}/>
+                    }} onClick={() => {
+                        this.toggleAddTaskModal(true);
+                    }}/>
+
+                    <AddTaskDrawer show={showAddTaskModal} isMobile={isMobile} onClose={() => {
+                        this.toggleAddTaskModal(false)
+                    }} onSubmit={this.handleAddTaskSubmit}/>
 
                     {
                         isLogin ?           //如果没有登陆就显示登陆和注册入口
@@ -193,7 +216,7 @@ class Nav extends React.Component {
                                     visible={this.state.modalVisible && !isLogin}
                                     footer={null}
                                     onCancel={this.hideModal}
-                                    onSubmit={this.handleSubmit}
+                                    onSubmit={this.handleLoginOrRegisterSubmit}
                                     showLogin={this.showLoginModal}
                                     showRegister={this.showRegister}
                                 >

@@ -5,7 +5,7 @@ import {
 import Tabs from 'antd/lib/tabs';
 import styled from 'styled-components';
 import {
-    TaskCardComponent
+    TaskCardComponent,
 } from '../index'
 import Spin from 'antd/lib/spin';
 import Menu from 'antd/lib/menu';
@@ -318,11 +318,6 @@ class HomeComponent extends React.Component {
                             <Texty enter={this.getEnter} leave={this.getEnter}>Welcome to TodoList</Texty>
                         </WelcomeBody>
                 }
-                {/*<div style={{*/}
-                    {/*position: 'fixed',*/}
-                    {/*// right: '100px',*/}
-                    {/*bottom: '100px',*/}
-                {/*}}>asdf</div>*/}
             </div>
         );
     }
