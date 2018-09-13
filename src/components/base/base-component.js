@@ -7,6 +7,7 @@ const BaseColor = {
     tag_color_3: '#87d068',
     tag_color_4: '#108ee9',
     lightGray: '#ddd',
+    red: '#f00',
     gray: '#666',
     black: '#000',
 };

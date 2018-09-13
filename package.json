@@ -10,6 +10,7 @@
     "moment": "^2.22.2",
     "pretty-bytes": "latest",
     "prop-types": "latest",
+    "rc-texty": "^0.2.0",
     "rc-tween-one": "^2.2.5",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",

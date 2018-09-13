@@ -25,10 +25,10 @@ function saveToken(token){
     UserManager.token = token;
     localStorage.setItem(LocalStorageKey.TOKEN, token);
     getTodoListAxios(axios => {
-        axios.defaults.headers.get['token'] = token;
-        axios.defaults.headers.post['token'] = token;
-        axios.defaults.headers.put['token'] = token;
-        axios.defaults.headers.delete['token'] = token;
+        axios.defaults.headers.get['Authorization'] = `JWT ${token}`;
+        axios.defaults.headers.post['Authorization'] = `JWT ${token}`;
+        axios.defaults.headers.put['Authorization'] = `JWT ${token}`;
+        axios.defaults.headers.delete['Authorization'] = `JWT ${token}`;
     })
 }
 
@@ -145,10 +145,10 @@ UserManager.logout = function () {
     UserManager.userInfo = {};
     localStorage.clear();
     getTodoListAxios(axios => {
-        axios.defaults.headers.get['token'] = "";
-        axios.defaults.headers.post['token'] = "";
-        axios.defaults.headers.put['token'] = "";
-        axios.defaults.headers.delete['token'] = "";
+        axios.defaults.headers.get['Authorization'] = "";
+        axios.defaults.headers.post['Authorization'] = "";
+        axios.defaults.headers.put['Authorization'] = "";
+        axios.defaults.headers.delete['Authorization'] = "";
     });
     store.dispatch({
         type: ACTION_COMMON_CHANGE_LOGIN_STATE,

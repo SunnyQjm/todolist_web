@@ -14,16 +14,24 @@ const TodolistAPI = {
      * 获取待办事项列表
      */
     GET_TASK_LIST: {
-        api: 'tasklist/',
+        api: 'tasklist',
         PARAM_PAGE: 'page',
         PARAM_PAGE_SIZE: 'page_size',
+        PARAM_ORDER_BY: 'order_by',         //排序的字段
+        PARAM_FINISHED: 'finished',         //是否筛选已完成的事项
+        PARAM_EXPIRED: 'expired',           //是否筛选已过期的事项
+        Category: {
+            NOT_FINISHED: 1,
+            FINISHED: 2,
+            EXPIRE: 3,
+        }
     },
 
     /**
      * 添加一个待办事项
      */
     ADD_TASK: {
-        api: 'addTask/',
+        api: 'addTask',
         PARAM_CONTENT: 'content',
         PARAM_TAGS: 'tags',
         PARAM_FINISHED: 'finished',
@@ -35,7 +43,7 @@ const TodolistAPI = {
      * 注册
      */
     REGISTER: {
-        api: 'register/',
+        api: 'register',
         PARAM_USERNAME: 'username',
         PARAM_PASSWORD: 'password',
         PARAM_EMAIL: 'email',
@@ -45,7 +53,7 @@ const TodolistAPI = {
      * 登陆
      */
     LOGIN: {
-        api: 'login/',
+        api: 'login',
         PARAM_USERNAME: 'username',
         PARAM_PASSWORD: 'password',
     },
@@ -54,7 +62,7 @@ const TodolistAPI = {
      * 查看，修改，删除待办事项
      */
     TASK_DETAIL: {
-        api: 'taskDetail/',
+        api: 'taskDetail',
         PARAM_CONTENT: 'content',
         PARAM_TAGS: 'tags',
         PARAM_FINISHED: 'finished',
@@ -66,7 +74,7 @@ const TodolistAPI = {
      * 更新令牌
      */
     UPDATE_TOKEN: {
-        api: 'updateToken/',
+        api: 'updateToken',
         PARAM_TOKEN: 'token',
     }
 };

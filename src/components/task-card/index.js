@@ -10,7 +10,7 @@ import Tag from 'antd/lib/tag';
 
 const radius = '8px';
 
-const TransCardBody = styled.div`
+const TaskCardBody = styled.div`
     background-color: white;
     border-radius: ${radius};
     display: flex;
@@ -39,7 +39,7 @@ const MyTag = styled.span`
     background-color: ${BaseColor.tag_color_3}
 `;
 
-const TransCardContent = styled.div`
+const TaskCardContent = styled.div`
     margin-left: 10px;
     padding: 8px;
     flex-grow: 1;
@@ -64,16 +64,8 @@ const RemoveIcon = styled(Icon)`
     }
 `;
 
-const ProgressBody = styled.div`
-    flex-grow: 0;
-    margin-right: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;    
-`;
 
-
-class UploadCard extends React.Component {
+class TaskCardComponent extends React.Component {
 
     state = {
         hover: false,
@@ -84,6 +76,7 @@ class UploadCard extends React.Component {
         this.dealOnMouseEnter = this.dealOnMouseEnter.bind(this);
         this.dealOnMouseLeave = this.dealOnMouseLeave.bind(this);
     }
+
 
     dealOnMouseEnter(e) {
         this.setState({
@@ -97,34 +90,51 @@ class UploadCard extends React.Component {
         })
     }
 
+
+    static judgeExpired(expire_date){
+        return moment().valueOf() > parseInt(expire_date)
+    }
+
     render() {
         let {content, expire_date, finished, priority, tags} = this.props.task;
         let {onRemove} = this.props;
         let {hover} = this.state;
         let tgs = [];
-        if(!!tags){
+        if (!!tags) {
             tags.split(',').forEach(tag => {
                 tag = tag.replace(/\s+/g, "");
                 if (!!tag)
-                    tgs.push(<Tag color={BaseColor.tag_color_4}>{tag}</Tag>)
+                    tgs.push(<Tag color={BaseColor.tag_color_4} key={tag}>{tag}</Tag>)
             });
         }
+
+        let expired = TaskCardComponent.judgeExpired(expire_date);
+        let leftTagBg = finished ? BaseColor.tag_color_3 : expired ? BaseColor.red : BaseColor.gray;
         //取得文件列表中最大的文件作为主标题
         return (
-            <TransCardBody {...this.props} onMouseEnter={this.dealOnMouseEnter} onMouseLeave={this.dealOnMouseLeave}>
-                <MyTag>
-                    <Icon type={finished ? 'check' : "schedule"}/>
+            <TaskCardBody {...this.props} onMouseEnter={this.dealOnMouseEnter} onMouseLeave={this.dealOnMouseLeave}>
+                <MyTag style={{
+                    backgroundColor: leftTagBg
+                }}>
+                    <Icon type={finished ? 'smile' : expired ? "frown" : "schedule"}/>
                 </MyTag>
-                <TransCardContent id={'display-body'}>
+                <TaskCardContent id={'display-body'}>
                     <Title>
                         {`${content}`}
                     </Title>
                     <ItemTags>
                         <Tag color={BaseColor.tag_color_2}>优先级：{priority}</Tag>
-                        <Tag color={BaseColor.tag_color_1}>截至时间: {moment(expire_date).format('YYYY-MM-DD')}</Tag>
+                        {
+                            finished ?
+                                ""
+                                :
+                                <Tag
+                                    color={BaseColor.tag_color_1}>截至时间: {moment(parseInt(expire_date)).format('YYYY-MM-DD')}</Tag>
+
+                        }
                         {tgs}
                     </ItemTags>
-                </TransCardContent>
+                </TaskCardContent>
 
                 {
                     hover ?
@@ -135,25 +145,25 @@ class UploadCard extends React.Component {
                         ""
                 }
 
-            </TransCardBody>
+            </TaskCardBody>
         )
     }
 }
 
-UploadCard.propTypes = {
+TaskCardComponent.propTypes = {
     task: PropTypes.shape({
             id: PropTypes.number,
             content: PropTypes.string,
-            expire_date: PropTypes.string,
+            expire_date: PropTypes.number,
             tags: PropTypes.string,
             priority: PropTypes.number,
-            finished: PropTypes.number,
+            finished: PropTypes.bool,
         }
     ),
     onRemove: PropTypes.func,
 };
 
-UploadCard.defaultProps = {
+TaskCardComponent.defaultProps = {
     task: PropTypes.shape({
         id: 0,
         content: '',
@@ -168,4 +178,4 @@ UploadCard.defaultProps = {
 
 };
 
-export default UploadCard;
+export default TaskCardComponent;
