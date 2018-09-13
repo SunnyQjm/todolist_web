@@ -239,12 +239,13 @@ class HomeComponent extends React.Component {
 
         return (
             <div style={{
-                height: '500px',
                 width: '100%',
             }}>
                 {
                     isLogin ?
-                        <HomeBody>
+                        <HomeBody style={{
+                            height: '100%',
+                        }}>
                             <ToolBar>
                                 <DropDown overlay={upRoDownMenu}>
                                     <Button style={{marginLeft: 8}}>
@@ -311,10 +312,17 @@ class HomeComponent extends React.Component {
                             </Tabs>
                         </HomeBody>
                         :
-                        <WelcomeBody>
+                        <WelcomeBody style={{
+                            height: '500px',
+                        }}>
                             <Texty enter={this.getEnter} leave={this.getEnter}>Welcome to TodoList</Texty>
                         </WelcomeBody>
                 }
+                {/*<div style={{*/}
+                    {/*position: 'fixed',*/}
+                    {/*// right: '100px',*/}
+                    {/*bottom: '100px',*/}
+                {/*}}>asdf</div>*/}
             </div>
         );
     }

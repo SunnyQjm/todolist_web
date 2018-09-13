@@ -66,7 +66,7 @@ class App extends Component {
                     history={history}
                 >
                     <AppBody style={{
-                        minHeight: '100%',
+                        height: '100%',
                     }}>
                         <HeaderContainer isMobile={isMobile} history={history}/>
                         <MyContent>

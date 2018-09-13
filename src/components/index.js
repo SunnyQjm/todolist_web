@@ -4,6 +4,7 @@ import SearchComponent from './search';
 import LoadingComponent from './loading';
 import HomeComponent from './home';
 import TaskCardComponent from './task-card';
+import LoginRegisterModal from './login-register-modal';
 
 export {
     FooterComponent,
@@ -12,4 +13,5 @@ export {
     LoadingComponent,
     HomeComponent,
     TaskCardComponent,
+    LoginRegisterModal,
 }
