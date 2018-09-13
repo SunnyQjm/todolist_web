@@ -137,7 +137,7 @@ class TaskCardComponent extends React.Component {
                     </ItemTags>
                 </TaskCardContent>
                 {
-                    hover && !finished && !expired ?
+                    hover && !finished ?
                         <div style={{
                             fontSize: '1.6em',
                             color: BaseColor.gray,

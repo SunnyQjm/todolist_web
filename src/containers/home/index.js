@@ -22,6 +22,7 @@ import {
     ACTION_HOME_UPDATE_TASK_FAIL,
     ACTION_HOME_UPDATE_TASK_SUCCESS,
     ACTION_HOME_BEGIN_UPDATE_TASK,
+    ACTION_HOME_CHANGE_PAGE,
 } from '../../ActionType';
 
 
@@ -40,7 +41,7 @@ export default connect(
              * @param page
              * @param page_size
              */
-            getTaskList: function (category, orderBY, page = 1, page_size = 10) {
+            getTaskList: function (category, orderBY, page = 1, page_size = 5) {
                 let url = `${TodolistAPI.GET_TASK_LIST.api}?${TodolistAPI.GET_TASK_LIST.PARAM_PAGE}=${page}`;
                 url += `&${TodolistAPI.GET_TASK_LIST.PARAM_PAGE_SIZE}=${page_size}`;
                 url += `&${TodolistAPI.GET_TASK_LIST.PARAM_ORDER_BY}=${orderBY}`;
@@ -166,6 +167,17 @@ export default connect(
                             });
                             fail()
                         })
+                })
+            },
+
+            /**
+             * 切换页面
+             */
+            changePage(page, category) {
+                dispatch({
+                    type: ACTION_HOME_CHANGE_PAGE,
+                    data: page,
+                    category: category,
                 })
             }
         }

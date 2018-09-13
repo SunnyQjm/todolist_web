@@ -17,9 +17,10 @@ import {
 } from '../../config/API'
 import 'rc-texty/assets/index.css';
 import Texty from 'rc-texty';
-import moment from 'moment';
+import Pagination from 'antd/lib/pagination';
 import Tag from "antd/lib/tag";
 import {BaseColor} from "../base/base-component";
+import QueueAnim from 'rc-queue-anim';
 
 
 const TabPane = styled(Tabs.TabPane)`
@@ -138,6 +139,9 @@ class HomeComponent extends React.Component {
         this.dealRemoveTask = this.dealRemoveTask.bind(this);
         this.makeTaskCard = this.makeTaskCard.bind(this);
         this.handleModifyTaskSubmit = this.handleModifyTaskSubmit.bind(this);
+        this.changePage = this.changePage.bind(this);
+        this.makePagination = this.makePagination.bind(this);
+        this.makeTab = this.makeTab.bind(this);
     }
 
     /**
@@ -177,12 +181,13 @@ class HomeComponent extends React.Component {
     /**
      * 获取待办事项
      */
-    loadNotFinishedTasks() {
-        let {getTaskList, notFinishedTasksPage, orderBY, up} = this.props;
+    loadNotFinishedTasks(page = -1) {
+        let {getTaskList, notFinishedTasksNextPage, orderBY, up} = this.props;
+        page = page > 0 ? page : notFinishedTasksNextPage;
         let orderStr = orderBY;
         if (!up)
             orderStr = `-${orderBY}`;
-        getTaskList(TodolistAPI.GET_TASK_LIST.Category.NOT_FINISHED, orderStr, notFinishedTasksPage);
+        getTaskList(TodolistAPI.GET_TASK_LIST.Category.NOT_FINISHED, orderStr, page);
         last_category = TodolistAPI.GET_TASK_LIST.Category.NOT_FINISHED;
     }
 
@@ -190,24 +195,26 @@ class HomeComponent extends React.Component {
     /**
      * 获取已完成的事项
      */
-    loadFinishedTasks() {
-        let {getTaskList, finishedTasksPage, orderBY, up} = this.props;
+    loadFinishedTasks(page = -1) {
+        let {getTaskList, finishedTasksNextPage, orderBY, up} = this.props;
+        page = page > 0 ? page : finishedTasksNextPage;
         let orderStr = orderBY;
         if (!up)
             orderStr = `-${orderBY}`;
-        getTaskList(TodolistAPI.GET_TASK_LIST.Category.FINISHED, orderStr, finishedTasksPage);
+        getTaskList(TodolistAPI.GET_TASK_LIST.Category.FINISHED, orderStr, page);
         last_category = TodolistAPI.GET_TASK_LIST.Category.FINISHED;
     }
 
     /**
      * 获取已过期的事项
      */
-    loadExpiredTasks() {
-        let {getTaskList, expireTasksPage, orderBY, up} = this.props;
+    loadExpiredTasks(page = -1) {
+        let {getTaskList, expireTasksNextPage, orderBY, up} = this.props;
+        page = page > 0 ? page : expireTasksNextPage;
         let orderStr = orderBY;
         if (!up)
             orderStr = `-${orderBY}`;
-        getTaskList(TodolistAPI.GET_TASK_LIST.Category.EXPIRE, orderStr, expireTasksPage);
+        getTaskList(TodolistAPI.GET_TASK_LIST.Category.EXPIRE, orderStr, page);
         last_category = TodolistAPI.GET_TASK_LIST.Category.EXPIRE;
     }
 
@@ -215,20 +222,20 @@ class HomeComponent extends React.Component {
      * 处理列表切换
      * @param key
      */
-    dealOnTabCLick(key) {
+    dealOnTabCLick(key, page = -1) {
         let judge = parseInt(key);
 
         // 记录当前处于哪个Tab
         current_tab_key = judge;
         switch (judge) {
             case 1:
-                this.loadNotFinishedTasks();
+                this.loadNotFinishedTasks(page);
                 break;
             case 2:
-                this.loadFinishedTasks();
+                this.loadFinishedTasks(page);
                 break;
             case 3:
-                this.loadExpiredTasks();
+                this.loadExpiredTasks(page);
                 break;
         }
     }
@@ -284,10 +291,79 @@ class HomeComponent extends React.Component {
         }}/>
     }
 
+
+    /**
+     * 处理页面切换
+     * @param page
+     * @param pageSize
+     */
+    changePage(page, pageSize) {
+        let {changePage} = this.props;
+        changePage(page, current_tab_key);
+        this.dealOnTabCLick(current_tab_key, page);
+    }
+
+    /**
+     * 构造分页器
+     * @param totalSize
+     * @returns {*}
+     */
+    makePagination(totalSize) {
+        return (
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                marginTop: '50px',
+            }}>
+                <Pagination defaultCurrent={1} total={totalSize}
+                            defaultPageSize={5} onChange={this.changePage}/>
+            </div>
+        )
+    }
+
+
+    /**
+     * 构造TabPane
+     * @param items
+     * @param totalSize
+     * @param tabTitle
+     * @param key
+     * @returns {*}
+     */
+    makeTab(items, totalSize, tabTitle, key) {
+        return (
+            <TabPane tab={tabTitle} key={key}>
+                {
+                    items.length > 0 ?
+                        <QueueAnim style={{
+                            width: '100%',
+                        }} interval={50} type={'top'}>
+                            {items}
+                        </QueueAnim>
+                        :
+                        <div style={{
+                            width: '100%',
+                            height: '500px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}>
+                            <Spin size="large"/>
+                        </div>
+                }
+
+                {this.makePagination(totalSize)}
+            </TabPane>
+        );
+    }
+
     render() {
         let {
             isMobile, notFinishedTasks, finishedTasks, expireTasks, orderBY,
-            up, isLogin, firstLoad
+            up, isLogin, firstLoad,
+            notFinishedTasksTotalSize, finishedTasksTotalSize, expireTasksTotalSize,
         } = this.props;
         let {showAddTaskModal, selectTask} = this.state;
         let headerContentWidth = isMobile ? '100%' : '1000px';
@@ -355,48 +431,9 @@ class HomeComponent extends React.Component {
                             <Tabs tabPosition={isMobile ? 'top' : 'left'} style={{
                                 width: headerContentWidth
                             }} onTabClick={this.dealOnTabCLick}>
-                                <TabPane tab="待办事项" key="1">
-                                    {notFinishedTaskItems.length > 0 ?
-                                        notFinishedTaskItems :
-                                        <div style={{
-                                            width: '100%',
-                                            height: '500px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}>
-                                            <Spin size="large"/>
-                                        </div>
-                                    }
-                                </TabPane>
-                                <TabPane tab="已完成" key="2">
-                                    {finishedTaskItems.length > 0 ?
-                                        finishedTaskItems :
-                                        <div style={{
-                                            width: '100%',
-                                            height: '500px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}>
-                                            <Spin size="large"/>
-                                        </div>
-                                    }
-                                </TabPane>
-                                <TabPane tab="已超期" key="3">
-                                    {expiredTaskItems.length > 0 ?
-                                        expiredTaskItems :
-                                        <div style={{
-                                            width: '100%',
-                                            height: '500px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}>
-                                            <Spin size="large"/>
-                                        </div>
-                                    }
-                                </TabPane>
+                                {this.makeTab(notFinishedTaskItems, notFinishedTasksTotalSize, '待办事项', "1")}
+                                {this.makeTab(finishedTaskItems, finishedTasksTotalSize, '已完成', "2")}
+                                {this.makeTab(expiredTaskItems, expireTasksTotalSize, '已超期', "3")}
                             </Tabs>
                         </HomeBody>
                         :
